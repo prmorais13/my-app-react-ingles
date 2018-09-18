@@ -1,31 +1,34 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const mongoose = require('mongoose');
-const passport = require('passport');
+const mongoose = require("mongoose");
+const passport = require("passport");
+
+// Load Validation
+const validateProfileInput = require("../../validation/profile");
 
 // Load Profile Model
-const Profile = require('../../models/Profile');
+const Profile = require("../../models/Profile");
 // Load User Model
-const User = require('../../models/User');
+const User = require("../../models/User");
 
 // @route  GET api/profile/test
 // @desc   Tests profile route
 // @access Public
-router.get('/test', (req, res) => res.json({ msg: 'Profile Working' }));
+router.get("/test", (req, res) => res.json({ msg: "Profile Working" }));
 
 // @route  GET api/profile
 // @desc   Get current users profile
 // @access Private
 router.get(
-  '/',
-  passport.authenticate('jwt', { session: false }),
+  "/",
+  passport.authenticate("jwt", { session: false }),
   (req, res) => {
     const errors = {};
 
     Profile.findOne({ user: req.user.id })
       .then(profile => {
         if (!profile) {
-          errors.noprofile = 'There is no profile for this user.';
+          errors.noprofile = "There is no profile for this user.";
           return res.status(404).json(errors);
         }
         res.json(profile);
@@ -38,12 +41,20 @@ router.get(
 // @desc   Create or Edit user profile
 // @access Private
 router.post(
-  '/',
-  passport.authenticate('jwt', { session: false }),
+  "/",
+  passport.authenticate("jwt", { session: false }),
   (req, res) => {
+    const { errors, isValid } = validateProfileInput(req.body);
+
+    // Check validations
+    if (!isValid) {
+      // Return any errors with 400 status
+      return res.status(400).json(errors);
+    }
+
     // Get fields
     const profileFields = {};
-    profileFields.user = req.body.user;
+    profileFields.user = req.user.id;
     if (req.body.handle) profileFields.handle = req.body.handle;
     if (req.body.company) profileFields.company = req.body.company;
     if (req.body.website) profileFields.website = req.body.website;
@@ -54,8 +65,8 @@ router.post(
       profileFields.githubusername = req.body.githubusername;
 
     // Skills split into array
-    if (typeof req.body.skills !== 'undefined') {
-      profileFields.skills = req.body.skills.split(',');
+    if (typeof req.body.skills !== "undefined") {
+      profileFields.skills = req.body.skills.split(",");
     }
 
     // Social
@@ -80,7 +91,7 @@ router.post(
         // Check if handle exists
         Profile.findOne({ handle: profileFields.handle }).then(profile => {
           if (profile) {
-            errors.handle = 'That handle already exists';
+            errors.handle = "That handle already exists";
             res.status(404).json(errors);
           }
 
