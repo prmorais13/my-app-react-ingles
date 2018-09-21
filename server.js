@@ -1,11 +1,11 @@
-const express = require("express");
-const mongoose = require("mongoose");
-const passport = require("passport");
+const express = require('express');
+const mongoose = require('mongoose');
+const passport = require('passport');
 
-const users = require("./routes/api/users");
-const profile = require("./routes/api/profile");
-const posts = require("./routes/api/posts");
-const bodyParser = require("body-parser");
+const users = require('./routes/api/users');
+const profile = require('./routes/api/profile');
+const posts = require('./routes/api/posts');
+const bodyParser = require('body-parser');
 
 const app = express();
 
@@ -14,24 +14,24 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 // DB Config
-const db = require("./config/keys").mongoURILocal;
+const db = require('./config/keys').mongoURI;
 
 // Connect MongoDB
 mongoose
   .connect(db)
-  .then(() => console.log("MongoDB connected."))
+  .then(() => console.log('MongoDB connected.'))
   .catch(err => console.log(err));
 
 // Passport midleware
 app.use(passport.initialize());
 
 // Passport config
-require("./config/passport")(passport);
+require('./config/passport')(passport);
 
 // Use Routes
-app.use("/api/users", users);
-app.use("/api/profile", profile);
-app.use("/api/posts", posts);
+app.use('/api/users', users);
+app.use('/api/profile', profile);
+app.use('/api/posts', posts);
 
 const port = process.dev || 5000;
 
