@@ -1,13 +1,17 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const passport = require('passport');
+const bodyParser = require('body-parser');
 
 const users = require('./routes/api/users');
 const profile = require('./routes/api/profile');
 const posts = require('./routes/api/posts');
-const bodyParser = require('body-parser');
+const allowCors = require('cors');
 
 const app = express();
+
+// Cors midleware
+app.use(allowCors());
 
 // Body parser midleware
 app.use(bodyParser.urlencoded({ extended: false }));
