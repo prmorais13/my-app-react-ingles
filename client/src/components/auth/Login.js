@@ -1,16 +1,16 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import classnames from "classnames";
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import classnames from 'classnames';
+import { connect } from 'react-redux';
 
-import { loginUser } from "../../action/authActions";
+import { loginUser } from '../../action/authActions';
 
 class Login extends Component {
   constructor() {
     super();
     this.state = {
-      email: "",
-      password: "",
+      email: '',
+      password: '',
       errors: {}
     };
 
@@ -20,7 +20,8 @@ class Login extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.auth.isAuthenticated) {
-      this.props.history.push("/dashboard");
+      this.setState({ errors: nextProps.errors });
+      this.props.history.push('/dashboard');
     }
 
     if (nextProps.errors) {
@@ -60,8 +61,8 @@ class Login extends Component {
                 <div className="form-group">
                   <input
                     type="email"
-                    className={classnames("form-control form-control-lg", {
-                      "is-invalid": errors.email
+                    className={classnames('form-control form-control-lg', {
+                      'is-invalid': errors.email
                     })}
                     placeholder="Email Address"
                     name="email"
@@ -75,8 +76,8 @@ class Login extends Component {
                 <div className="form-group">
                   <input
                     type="password"
-                    className={classnames("form-control form-control-lg", {
-                      "is-invalid": errors.password
+                    className={classnames('form-control form-control-lg', {
+                      'is-invalid': errors.password
                     })}
                     placeholder="Password"
                     name="password"
